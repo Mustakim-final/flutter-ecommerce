@@ -45,6 +45,8 @@ class _HomeState extends State<Home> {
   List _products = [];
   var _firestoreInstance = FirebaseFirestore.instance;
 
+  List<Product> products=[];
+
   fetchProducts()async{
     QuerySnapshot qn= await _firestoreInstance.collection("product").get();
     setState(() {
@@ -183,34 +185,36 @@ class _HomeState extends State<Home> {
               SizedBox(height: mq.height*.03,),
 
               Expanded(
-                  child: GridView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _products.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
-                      ),
-                      itemBuilder: (_,index){
-                        return GestureDetector(
-                          onTap:(){Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetails(_products[index])));} ,
-                          child: Card(
-                            elevation: 3,
-                            child: Column(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 2,
-                                  child: Container(
-                                    child: Image.network(_products[index]["product-image"]),
-                                  ),
+                  child: StreamBuilder(
+                    stream: Apis.getAllProduct(),
+                    builder: (context,snapshot){
+                      final data=snapshot.data!.docs;
+                      products=data.map((e) => Product.fromJson(e.data())).toList()??[];
+                      return GridView.builder(
+                        scrollDirection: Axis.horizontal,
 
-                                ),
-                                Text("${_products[index]["product-name"]}"),
-                                Text("${_products[index]["product-price"].toString()}"),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
+                        itemCount: products.length,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1
+                          ), 
+                          itemBuilder: (context,index){
+                            return Card(
+                              child: Column(
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: 2,
+                                    child: Container(
+                                       child: Image.network(products[index].proImage),
+                                    ),
+                                  ),
+                                  Text('${products[index].proName}')
+                                ],
+                              ),
+                            );
+                          }
+                      );
+                    },
                   )
               )
 
@@ -221,3 +225,35 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+
+
+// GridView.builder(
+// scrollDirection: Axis.horizontal,
+// itemCount: _products.length,
+// gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+// crossAxisCount: 2,
+// childAspectRatio: 1,
+// ),
+// itemBuilder: (_,index){
+// return GestureDetector(
+// onTap:(){Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetails(_products[index])));} ,
+// child: Card(
+// elevation: 3,
+// child: Column(
+// children: [
+// AspectRatio(
+// aspectRatio: 2,
+// child: Container(
+// child: Image.network(_products[index]["product-image"]),
+// ),
+//
+// ),
+// Text("${_products[index]["product-name"]}"),
+// Text("${_products[index]["product-price"].toString()}"),
+// ],
+// ),
+// ),
+// );
+// }
+// )

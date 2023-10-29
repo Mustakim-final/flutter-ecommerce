@@ -66,12 +66,12 @@ class Apis{
 
   }
 
-  //for getting all messages of a specific conversion from firestore database
+  //for getting all slider
   static Stream<QuerySnapshot<Map<String,dynamic>>> getAllSlider(){
     return firestore.collection('slider').snapshots();
   }
 
-  //for getting all messages of a specific conversion from firestore database
+  //for getting all products
   static Stream<QuerySnapshot<Map<String,dynamic>>> getAllProduct(){
     return firestore.collection('product')
         .snapshots();

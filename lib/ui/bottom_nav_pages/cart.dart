@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/Apis/apis.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../Model/cart _model.dart';
+
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -11,6 +18,7 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+  List<Cart_model> cart=[];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,17 +32,18 @@ class _CartState extends State<Cart> {
           child: StreamBuilder (
             stream:  Apis.getCartItem(),
             builder: (context,snapshot){
-              if(snapshot.hasError){
-                return Center(child: Text("Something went wrong"),);
-              }
+              final data=snapshot.data!.docs;
+              cart=data?.map((e) => Cart_model.fromJson(e.data())).toList()??[];
+
               return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                  itemBuilder:(_,index){
+                // itemCount: snapshot.data!.docs.length,
+                itemCount: cart.length,
+                  itemBuilder:(context,index){
                     DocumentSnapshot _docSnap=snapshot.data!.docs[index];
                     return Card(
                       child: ListTile(
-                        leading: Text(_docSnap['name']),
-                        title: Text("৳ ${_docSnap['price']}"),
+                        leading: Text('${cart[index].name}'),
+                        title: Text("${cart[index].price}"),
                         trailing: GestureDetector(
                           child: CircleAvatar(
                             child: Icon(Icons.remove_circle),

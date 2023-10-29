@@ -18,11 +18,11 @@ class Product {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['pro_price'] = proPrice;
-    _data['pro_image'] = proImage;
-    _data['pro_description'] = proDescription;
-    _data['pro_name'] = proName;
-    return _data;
+    final data = <String, dynamic>{};
+    data['pro_price'] = proPrice;
+    data['pro_image'] = proImage;
+    data['pro_description'] = proDescription;
+    data['pro_name'] = proName;
+    return data;
   }
 }
